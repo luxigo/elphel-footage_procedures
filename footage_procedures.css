@@ -1,0 +1,87 @@
+#folders {position:relative;}
+#buttons {position:relative;top:20px;left:20px;}
+#status {position:relative;top:50px;left:30px;}
+
+#status_span, #blinking_span {font-size:40px;}
+
+.button {
+    font-size:12px;
+    color:#fff;
+    display:inline-block;
+    border:0px;
+
+    text-align:center;
+
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    -o-border-radius:3px;
+    border-radius:3px;
+    background:#66aa66;
+
+    -moz-box-shadow: 1px 1px 1px black;
+    -webkit-box-shadow: 1px 1px 1px black;
+    box-shadow: 1px 1px 1px black;
+    
+    padding: 5px;
+}
+
+.button:hover {
+    color:#fff;
+    background:#66bb66;
+}
+
+.button:active {
+    background:#4195dd;
+    background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#003C82), to(#4195dd));
+    background:-moz-linear-gradient(0% 90% 90deg, #4195dd, #003C82);
+} 
+
+.rounded_borders {
+    border: 0px;
+    -moz-border-radius:3px;
+    -webkit-border-radius:3px;
+    -o-border-radius:3px;
+    border-radius:3px;
+}
+
+.shadow {
+    -moz-box-shadow: 2px 2px 2px black;
+    -webkit-box-shadow: 2px 2px 2px black;
+    box-shadow: 2px 2px 2px black;
+}
+
+.gradient {
+    /*background: rgba(255,255,255,0.7);*/
+    background: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.9)), to(rgba(225,225,225,0.6))); /* for webkit browsers */
+    background: -moz-linear-gradient(top,  rgba(255,255,255,0.9),  rgba(255,255,255,0.6)); /* for firefox 3.6+ */
+}
+
+.padding {
+    padding: 2px 5px 2px 5px;
+}
+
+#step1_div {
+  background: rgba(100,200,100,0.3);
+  width: 800px;
+  height: 200px;
+  padding: 5px;
+}
+
+#step2_div {
+  background: rgba(100,200,100,0.3);
+  width: 800px;
+  padding: 5px;
+}
+
+#step3_div {
+  background: rgba(100,200,100,0.3);
+  width: 800px;
+  height: 380px;
+  padding: 5px;
+}
+
+#step3_buttons {position:relative;top:20px;left:20px;}
+
+#step3_kml_gen_div {position:relative;top:20px;}
+
+

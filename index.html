@@ -1,0 +1,189 @@
+<html>
+<head>
+    <title>Eyesis Footage Procedures</title>
+    <script src="jquery-1.7.2.min.js" type="text/javascript"></script>
+    <link rel="some icon" href="fp_logo.png">
+    <link rel="stylesheet" type="text/css" href="footage_procedures.css" />
+</head>
+<body>
+    <div style="padding:5px;font-size:12px;color:red;width:600px;">Note: the folders' rights should be R/W for everyone.</div>
+    <h4>Step 1: Extracting, creating KML, Previewing, Copying</h4>
+    <div id=step1_div class="gradient shadow rounded_borders">
+	<div id=folders>
+	    <table>
+	    <tr>
+		<td>Processing folder:</td>
+		<td><b>/data/footage/</b><input class="rounded_borders shadow padding" id="pf" type=text width=300 value='test' /></td>
+	    </tr>
+	    </table>
+	</div>
+	<div id=buttons>
+	    <table>
+<!--	    <tr><td style="padding:3px;"><button class=button id=splitall onclick="splitall()">Split All *.movs</button></td></tr>-->
+	    <tr><td style="padding:3px;"><button class=button id=filter onclick="filter()">Filter Out Images with Non-Matching Timestamps</button></td></tr>
+	    <tr><td style="padding:3px;"><button class=button id=kml_gen onclick="kml_gen()">Generate KML</button></td></tr>
+	    <tr><td style="padding:20px 0px;"><button class=button id=copy_all onclick="copy_all()">Copy All</button>&nbsp;to <b>/data/post-processing/src</b>&nbsp;&nbsp;OR use&nbsp;&nbsp;<a href='../panorama_preview/'>Eyesis Panorama Previewer</a></td></tr>
+	    </table>
+	</div>
+	<div style="position:absolute;top:270px;left:750px;">
+	    <button class=button id=step1_run_all onclick="step1_run_all()">Run All</button>
+	</div>
+    </div>
+    <h4>Step 2: Enhancing in ImageJ</h4>    
+    <div id=step2_div class="gradient shadow rounded_borders">
+	N/A
+    </div>
+    <h4>Step 3: Stitching, splitting for WebGL Editor</h4>    
+    <div id=step3_div class="gradient shadow rounded_borders">
+	<div id=step3_folders>
+	    <table>
+	    <tr>
+		<td>Processing root folder:</td>
+		<td><input class="rounded_borders shadow padding" id="s3_pf" type=text style="width:300px" value='/data/post-processing' /></td>
+	    </tr>
+	    <tr>
+		<td>Sources subfolder:</td>
+		<td><input class="rounded_borders shadow padding" id="s3_src_sub" type=text width=200 value='src' /></td>
+	    </tr>
+	    <tr>
+		<td>ImageJ-processed subfolder:</td>
+		<td><input class="rounded_borders shadow padding" id="s3_processed_sub" type=text width=200 value='imagej_processed' /></td>
+	    </tr>
+	    </table>
+	</div>
+	<div id=step3_buttons>
+	    <table>
+	    <tr><td style="padding:3px;"><button class=button id=step3_stitch onclick="step3_stitch()">Stitch</button></td></tr>
+	    <tr><td style="padding:3px;"><button class=button id=Step3_cut onclick="step3_split()">Split images for WebGL Editor</button></td></tr>
+	    <tr><td style="padding:3px;"><button class=button id=step3_compress onclick="step3_compress()">Compress images for Google Earth</button></td></tr>
+	    </table>
+	</div>
+	<br/>
+	<div id=step3_kml_gen_div>
+	    <table>
+		<tr><td>Path prefix inside KML:   </td><td><input class="rounded_borders shadow padding" id="s3_dest" type=text style="width:500px" value='http://127.0.0.1/panoramas' /></td></tr>
+		<tr><td>Visibility:   </td><td><input class="rounded_borders shadow padding" id="s3_visibility" type=text style="width:50px" value='1' /></td></tr>
+		<tr><td>Staring Index:</td><td><input class="rounded_borders shadow padding" id="s3_index" type=text style="width:50px" value='1' /></td></tr>
+	    </table>
+
+	    <table style="position:relative;left:20px;">
+	    <tr><td style="padding:3px;"><button class=button id=step3_kml_gen onclick="step3_kml()">Generate KML for WebGL Editor</button></td></tr>
+	    </table>
+	 </div>
+	<div style="position:absolute;top:765px;left:750px;">
+	    <button class=button id=step1_run_all onclick="step3_run_all()">Run All</button>
+	</div>
+    </div>
+
+    <div id=status style="width:700px;">Status: <span id=status_span>Idle</span><span id=blinking_span></span></div>
+
+    <script>
+
+	var working_intvl;
+
+	function splitall(){
+	    request = "split_mov_customized.php?ext=jp4&path="+$("#pf").val();
+	    $("#status_span").html("Splitting");
+	    ajax_request(request,"Splitting done.");
+	}
+
+	function filter(){
+	    request = "filter_jp4s.php?ext=jp4&path="+$("#pf").val();
+	    $("#status_span").html("Filtering");
+	    ajax_request_async(request,"Filtering done.");
+	}
+
+	function kml_gen(){
+	    request = "exif2kml_local.php?ext=jp4&path="+$("#pf").val();
+	    $("#status_span").html("Generating KML");
+	    ajax_request_async(request,"KML generated.");
+	}
+
+	function copy_all(){
+	    request = "copy_all.php?src=/data/footage/"+$("#pf").val()+"&dest=/data/post-processing/src"+"&imagej=/data/post-processing/imagej_processed";
+	    $("#status_span").html("Copying");
+	    ajax_request(request,"Copying done.");
+	}
+
+	function step3_stitch(){
+	    request = "stitch.php?dest="+$("#s3_pf").val()+"/results"+"&src="+$("#s3_pf").val()+"/"+$("#s3_processed_sub").val();
+	    $("#status_span").html("Stitching");
+	    ajax_request_async(request,"Stitching done.");
+	}
+
+	function step3_split(){
+	    request = "prepare_images_for_wpe.php?path="+$("#s3_pf").val()+"/results";
+	    $("#status_span").html("Splitting for WPE");
+	    ajax_request_async(request,"Splitting for WPE done.");
+	}
+
+	function step3_compress(){
+	    request = "prepare_images_for_google_earth.php?path="+$("#s3_pf").val()+"/results";
+	    $("#status_span").html("Compressing for GE");
+	    ajax_request(request,"Compressing for GE done.");
+	}
+
+	function step3_kml(){
+	    request = "exif2kml.php?ext=jp4&path="+$("#s3_pf").val()+"/"+$("#s3_src_sub").val()+"&visibility="+$("#s3_visibility").val()+"&index="+$("#s3_index").val()+"&dest="+$("#s3_dest").val();
+	    $("#status_span").html("Generating KML");
+	    ajax_request(request,"Generating KML done.");
+	}
+
+	function step1_run_all() {
+	    splitall();
+	    filter();
+	    kml_gen();
+	}
+
+	function step3_run_all() {
+	    step3_stitch();
+	    step3_split();
+	    step3_compress();
+	    step3_kml();
+	}
+
+	function ajax_request(request,done_message){
+	    working_intvl = setInterval("working()",1000);
+	    $.ajax({
+	      url: request,
+	      async: true,
+	      success: function(){
+		//splitting_done();
+		procedure_done(done_message);
+	      }
+	    });
+	}
+
+	function ajax_request_async(request,done_message){
+	    working_intvl = setInterval("working()",1000);
+	    $.ajax({
+	      url: request,
+	      async: true,
+	      success: function(){
+		//splitting_done();
+		procedure_done(done_message);
+	      }
+	    });
+	}
+
+	function procedure_done(message){
+	    clearInterval(working_intvl);
+	    $("#blinking_span").html("");
+	    $("#status_span").html(message);
+	}
+
+	function working(){
+	    var d = new Date();
+    
+	    var curr_sec = d.getSeconds();
+	    
+	    if      (curr_sec%4==1) $("#blinking_span").html(".");
+	    else if (curr_sec%4==2) $("#blinking_span").html("..");
+	    else if (curr_sec%4==3) $("#blinking_span").html("...");
+	    else                    $("#blinking_span").html("");
+	}
+
+    </script>
+
+</body>
+</html>
