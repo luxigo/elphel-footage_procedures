@@ -64,18 +64,18 @@ foreach($timestamps as $index=>$tss) {
     
     $f=update_fs($suffs[$index]);
     
-    for ($i=0;$i<9;$i++)   $list1 .= " $src/{$tss}-".$f[$i];
-    for ($i=9;$i<18;$i++)  $list2 .= " $src/{$tss}-".$f[$i];
-    for ($i=18;$i<27;$i++) $list3 .= " $src/{$tss}-".$f[$i];
+    for ($i=0;$i<9;$i++)   if (is_file("$src/{$tss}-".$f[$i])) $list1 .= " $src/{$tss}-".$f[$i];
+    for ($i=9;$i<18;$i++)  if (is_file("$src/{$tss}-".$f[$i])) $list2 .= " $src/{$tss}-".$f[$i];
+    for ($i=18;$i<27;$i++) if (is_file("$src/{$tss}-".$f[$i])) $list3 .= " $src/{$tss}-".$f[$i];
     
     //echo "dam {$suffs[$index]}\n";
     
     //exec("enblend -l 10 --no-optimize --fine-mask -a -v -w -o $dest/result_{$tss}_1.tif $list");
-    exec("enblend -l 10 -w -o $dest/result_{$tss}_top.tif $list1");
-    exec("enblend -l 10 -w -o $dest/result_{$tss}_mid.tif $list2");
-    exec("enblend -l 10 -w -o $dest/result_{$tss}_bot.tif $list3");
+    exec("enblend -w -o $dest/result_{$tss}_top.tif $list1");
+    exec("enblend -w -o $dest/result_{$tss}_mid.tif $list2");
+    exec("enblend -w -o $dest/result_{$tss}_bot.tif $list3");
     
-    exec("enblend --wrap='vertical' -l 10 -o $dest/result_{$tss}.tif $dest/result_{$tss}_top.tif $dest/result_{$tss}_mid.tif $dest/result_{$tss}_bot.tif");
+    exec("enblend --wrap='vertical' -o $dest/result_{$tss}.tif $dest/result_{$tss}_top.tif $dest/result_{$tss}_mid.tif $dest/result_{$tss}_bot.tif");
     unlink("$dest/result_{$tss}_top.tif");
     unlink("$dest/result_{$tss}_mid.tif");
     unlink("$dest/result_{$tss}_bot.tif");

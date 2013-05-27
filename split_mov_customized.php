@@ -28,10 +28,16 @@
 *! 
 */
 
+include 'filesystem.php';
+
 set_time_limit(60*60*24);
 
 $chunksize=10000000; // 10MB 
 $startMarkerWithExif=chr(hexdec("ff")).chr(hexdec("d8")).chr(hexdec("ff")).chr(hexdec("e1"));
+
+$root_path = "/data/footage";
+
+$starting_index = 0;
 
 echo "<pre>\n";
 
@@ -43,31 +49,32 @@ if (!isset($_GET['path']) || !isset($_GET['ext'])) {
 }
 
 if (isset($_GET['path'])) $path=$_GET['path'];
-else $path="20110413";
+else $path="20110413/mov";
 
 if (isset($_GET['ext'])) $extension = $_GET['ext']; 
 else                     $extension = "jp4";
 
-if (isset($_GET['dest_path'])) $destination = $_GET['dest_path']; 
-else                           $destination = "result";
 
+$mov_files = scandir("$root_path/$path/mov");
 
-$disks = array("/data/disk-1", "/data/disk-2", "/data/disk-3");
-
-foreach($disks as $disk) {
-     $files = scandir("$disk/$path");
-     
-     if (!is_dir("$disk/$path/$destination")) mkdir("$disk/$path/$destination",0777);
-
-     foreach ($files as $file) {
-	  if (get_file_extension($file)=="mov") {
-	      echo "Splitting $disk/$path/$file into {$extension}s\n";
-	      split_mov("$disk/$path",$file,$destination,$extension,$startMarkerWithExif,$chunksize);
-	  }
-     }
+foreach($mov_files as $mov_file) {
+    $ext = get_file_extension($mov_file);
+    if ($ext=="mov") {
+      echo $mov_file."\n";
+      $index=update_subsubdir("$root_path/$path",$starting_index,$limit=90000);
+      $channel=get_channel($mov_file);
+      echo "$channel\n";
+      split_mov("$root_path/$path","mov/".$mov_file,"$index",$channel,"jp4",$startMarkerWithExif,$chunksize);
+    }
 }
 
-function split_mov($path,$mov_file,$dest,$ext,$startMarkerWithExif,$chunksize) {
+function get_channel($string){
+    $end = strrpos($string,".");
+    $start = strrpos($string,"_")+1;
+    return substr($string,$start,$end-$start);
+}
+
+function split_mov($path,$mov_file,$dest,$channel,$ext,$startMarkerWithExif,$chunksize) {
 
 	$path_with_name = "$path/$mov_file";
 
@@ -111,7 +118,7 @@ function split_mov($path,$mov_file,$dest,$ext,$startMarkerWithExif,$chunksize) {
     
 		//converting GMT a local time GMT+7
 		$DateTimeOriginal_local=strtotime($exif_data['DateTimeOriginal']);/*-25200;*/
-		$new_file_name = $DateTimeOriginal_local."_".$exif_data['SubSecTimeOriginal'].".".$ext;
+		$new_file_name = $DateTimeOriginal_local."_".$exif_data['SubSecTimeOriginal']."_$channel.".$ext;
 
 		rename($old_file_name,"$path/$dest/$new_file_name");
 	}    
