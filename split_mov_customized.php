@@ -54,17 +54,20 @@ else $path="20110413/mov";
 if (isset($_GET['ext'])) $extension = $_GET['ext']; 
 else                     $extension = "jp4";
 
-
-$mov_files = scandir("$root_path/$path/mov");
+$n = count(scandir("$root_path/$path/mov"))-2;
+$mov_files = scandir("$root_path/$path/mov/1");
 
 foreach($mov_files as $mov_file) {
     $ext = get_file_extension($mov_file);
     if ($ext=="mov") {
       echo $mov_file."\n";
       $index=update_subsubdir("$root_path/$path",$starting_index,$limit=90000);
-      $channel=get_channel($mov_file);
-      echo "$channel\n";
-      split_mov("$root_path/$path","mov/".$mov_file,"$index",$channel,"jp4",$startMarkerWithExif,$chunksize);
+
+      //$channel=get_channel($mov_file);
+      //echo "$channel\n";
+      for ($channel=1;$channel<10;$channel++){
+	  split_mov("$root_path/$path","mov/$channel/".$mov_file,"$index",$channel,"jp4",$startMarkerWithExif,$chunksize);
+      }
     }
 }
 
