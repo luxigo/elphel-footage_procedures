@@ -94,10 +94,13 @@ function update($file){
     $found = false;
     $ts = substr($file,0,17);
     
+    $mid = "RGB24";
+    if (preg_match("/INT16/",$file)!=0) $mid = "INT16";
+
     $suf = "DECONV";//default
-    if (preg_match("/DECONV/",$file)!=0)   $suf = "DECONV-INT16_EQR";
-    if (preg_match("/DEMOSAIC/",$file)!=0) $suf = "DEMOSAIC-INT16_EQR";
-    if (preg_match("/LOWRES/",$file)!=0)   $suf = "LOWRES-INT16_EQR";
+    if (preg_match("/DECONV/",$file)!=0)   $suf = "DECONV-{$mid}_EQR";
+    if (preg_match("/DEMOSAIC/",$file)!=0) $suf = "DEMOSAIC-{$mid}_EQR";
+    if (preg_match("/LOWRES/",$file)!=0)   $suf = "LOWRES-{$mid}_EQR";
     
     foreach($timestamps as $index=>$elem) {
 	if ($ts==$elem) {
