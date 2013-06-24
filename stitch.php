@@ -35,6 +35,18 @@ if (isset($_GET['dest'])) $dest = $_GET['dest'];
 else if (isset($argv[2])) $dest = $argv[2];
 else {print_script_contents();}
 
+if (isset($_GET['bp']))   $black_point = $_GET['bp'];
+else if (isset($argv[3])) $black_point = $argv[3];
+else                      $black_point = 0;
+
+if (isset($_GET['wp']))   $white_point = $_GET['wp'];
+else if (isset($argv[4])) $white_point = $argv[4];
+else                      $white_point = 25;
+
+if (isset($_GET['q']))    $quality = $_GET['q'];
+else if (isset($argv[5])) $quality = $argv[5];
+else                      $quality = 92;
+
 if (!is_dir($dest)) {
   //creating a folder with access rights - 0777
   $old = umask(0);
@@ -82,7 +94,7 @@ foreach($timestamps as $index=>$tss) {
     //exec("convert $dest/result_{$tss}.tif -level 0%,10%,1 $dest/result_{$tss}-0-10-1.jpeg");
     //exec("convert $dest/result_{$tss}.tif -level 0%,14%,1 $dest/result_{$tss}-0-14-1.jpeg");
     //exec("convert $dest/result_{$tss}.tif -level 0%,18%,1 $dest/result_{$tss}-0-18-1.jpeg");
-    exec("convert $dest/result_{$tss}.tif -level 0%,25%,1 $dest/result_{$tss}-0-25-1.jpeg");
+    exec("convert $dest/result_{$tss}.tif -level {$black_point}%,{$white_point}%,1 -quality $quality $dest/result_{$tss}-0-25-1.jpeg");
     //exec("convert $dest/result_{$tss}.tif -level 0%,50%,1 $dest/result_{$tss}-0-50-1.jpeg");
 }
 

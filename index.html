@@ -49,11 +49,25 @@
 		<td>ImageJ-processed subfolder:</td>
 		<td><input class="rounded_borders shadow padding" id="s3_processed_sub" type=text width=200 value='imagej_processed' /></td>
 	    </tr>
+	    <tr title="Used when processed tiff from ImageJ is converted into jpeg">
+		<td>Black Point, %:</td>
+		<td><input class="rounded_borders shadow padding" type="text" id="s3_bp" value="0" /></td>
+	    </tr>
+	    <tr title="Used when processed tiff from ImageJ is converted into jpeg -> for 32-bit tiff - 25%, for 16-bit - 50%, for 8-bit - 100%">
+		<td>White Point, %:</td>
+		<td><input class="rounded_borders shadow padding" type="text" id="s3_wp" value="25" /></td>
+	    </tr>
+	    <tr title="Used when processed tiff from ImageJ is converted into jpeg">
+		<td>Compression Quality, %:</td>
+		<td><input class="rounded_borders shadow padding" type="text" id="s3_cq" value="95" /></td>
+	    </tr>
 	    </table>
 	</div>
 	<div id=step3_buttons>
 	    <table>
-	    <tr><td style="padding:3px;"><button class=button id=step3_stitch onclick="step3_stitch()">Stitch</button></td></tr>
+	    <tr>
+		<td style="padding:3px;"><button class=button id=step3_stitch onclick="step3_stitch()">Stitch</button></td>
+	    </tr>
 	    <tr><td style="padding:3px;"><button class=button id=Step3_cut onclick="step3_split()">Split images for WebGL Editor</button></td></tr>
 	    <tr><td style="padding:3px;"><button class=button id=step3_compress onclick="step3_compress()">Compress images for Google Earth</button></td></tr>
 	    </table>
@@ -106,7 +120,7 @@
 	}
 
 	function step3_stitch(){
-	    request = "stitch.php?dest="+$("#s3_pf").val()+"/results"+"&src="+$("#s3_pf").val()+"/"+$("#s3_processed_sub").val();
+	    request = "stitch.php?dest="+$("#s3_pf").val()+"/results"+"&src="+$("#s3_pf").val()+"/"+$("#s3_processed_sub").val()+"&bp="+$("#s3_bp").val()+"&wp="+$("#s3_wp").val()+"&q="+$("#s3_cq").val();
 	    $("#status_span").html("Stitching");
 	    ajax_request_async(request,"Stitching done.");
 	}
