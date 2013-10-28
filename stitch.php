@@ -82,12 +82,12 @@ foreach($timestamps as $index=>$tss) {
     
     //echo "dam {$suffs[$index]}\n";
     
-    //exec("enblend -l 10 --no-optimize --fine-mask -a -v -w -o $dest/result_{$tss}_1.tif $list");
-    exec("enblend -w -o $dest/result_{$tss}_top.tif $list1");
-    exec("enblend -w -o $dest/result_{$tss}_mid.tif $list2");
-    exec("enblend -w -o $dest/result_{$tss}_bot.tif $list3");
+    //exec("enblend-mp -l 10 --no-optimize --fine-mask -a -v -w -o $dest/result_{$tss}_1.tif $list");
+    exec("enblend-mp -w -o $dest/result_{$tss}_top.tif $list1");
+    exec("enblend-mp -w -o $dest/result_{$tss}_mid.tif $list2");
+    exec("enblend-mp -w -o $dest/result_{$tss}_bot.tif $list3");
     
-    exec("enblend --wrap='vertical' -o $dest/result_{$tss}.tif $dest/result_{$tss}_top.tif $dest/result_{$tss}_mid.tif $dest/result_{$tss}_bot.tif");
+    exec("enblend-mp --wrap='vertical' -o $dest/result_{$tss}.tif $dest/result_{$tss}_top.tif $dest/result_{$tss}_mid.tif $dest/result_{$tss}_bot.tif");
     unlink("$dest/result_{$tss}_top.tif");
     unlink("$dest/result_{$tss}_mid.tif");
     unlink("$dest/result_{$tss}_bot.tif");
