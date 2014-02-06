@@ -1,4 +1,4 @@
-<?
+<?php
 
 //echo "<pre>";
 //echo update_subsubdir("footage/folder2",0,0);
