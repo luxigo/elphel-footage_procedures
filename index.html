@@ -31,7 +31,25 @@
             </div>
             <h4>Step 2: Enhancing in ImageJ</h4>    
             <div id=step2_div class="gradient shadow rounded_borders">
-
+                <div id=step2_folders>
+                    <table>
+                        <tr>
+                            <td>Source folder:</td>
+                            <td><input class="rounded_borders shadow padding" id="s2_sf" type=text style="width:300px" value='/data/footage/test' /></td>
+                        </tr>
+                        <tr>
+                            <td>Results folder:</td>
+                            <td><input class="rounded_borders shadow padding" id="s2_rf" type=text style="width:300px" value='/data/post-processing' /></td>
+                        </tr>
+                        <tr>
+                            <td>ImageJ-Eyesis correction parameters:</td>
+                            <td><input class="rounded_borders shadow padding" id="s2_cp" type=text style="width:300px" value='/data/footage/Eyesis_Correction.xml' /></td>
+                        </tr>
+                    </table>
+                </div>
+                <div style="position: relative; left:737px; margin-bottom: 10px;">
+                    <button class=button id=step2_run_all onclick="step2_run_all()">Run All</button>
+                </div>
             </div>
             <h4>Step 3: Stitching, splitting for WebGL Editor</h4>    
             <div id=step3_div class="gradient shadow rounded_borders">
@@ -93,7 +111,7 @@
 
             <script>
 
-            var working_intvl;
+            var working_timeout;
 
             function splitall(){
                 request = "split_mov_customized.php?ext=jp4&path="+$("#pf").val();
@@ -149,6 +167,30 @@
                 kml_gen();
             }
 
+            function step2_run_all() {
+                working_timeout = setTimeout(working,1000);
+                $.ajax({
+                    url: "run_imagej-elphel_eyesis-correction.php",
+                    data: {
+                        source: $('#s2_sf').val(),
+                        results: $('#s2_rf').val(),
+                        prefs: $('#s2_cp').val()
+                    },
+                    success: function(data,textStatus,jqXHR) {
+                      if (data.error) {
+                        procedure_done(data.error);
+                      } else {
+                        $('#status_span',html(data.message);
+                        show_progress('Eyesis_Correction',data.timestamp);
+                        ..... zzz ....
+                      }
+                    },
+                    error: function(jqXHR,textStatus,errorThrown) {
+                        procedure_done(textStatus+' '+errorThrown);
+                    }
+                });
+            }
+
             function step3_run_all() {
                 step3_stitch();
                 step3_split();
@@ -157,7 +199,7 @@
             }
 
             function ajax_request(request,done_message){
-                working_intvl = setInterval("working()",1000);
+                working_timeout = setTimeout(working,1000);
                 $.ajax({
                         url: request,
                         async: true,
@@ -169,7 +211,7 @@
             }
 
             function ajax_request_async(request,done_message){
-                working_intvl = setInterval("working()",1000);
+                working_timeout = setTimeout(working,1000);
                 $.ajax({
                         url: request,
                         async: true,
@@ -181,7 +223,7 @@
             }
 
             function procedure_done(message){
-                clearInterval(working_intvl);
+                clearTimeout(working_timeout);
                 $("#blinking_span").html("");
                 $("#status_span").html(message);
             }
@@ -195,7 +237,25 @@
                 else if (curr_sec%4==2) $("#blinking_span").html("..");
                 else if (curr_sec%4==3) $("#blinking_span").html("...");
                 else                    $("#blinking_span").html("");
+
+                working_timeout=setTimeout(working,1000);
             }
+
+            function show_progress(jobname,timestamp) {
+              $.ajax({
+                  url: "progress.php",
+                  data: {
+                    j: jobname,
+                    t: timestamp
+                  },
+                  success: function(data) {
+                  },
+                  error: function(jqXHR,textStatus,errorThrown) {
+                    
+                  }
+              });
+            }
+
 
         </script>
 
