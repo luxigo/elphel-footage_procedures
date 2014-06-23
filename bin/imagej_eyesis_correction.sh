@@ -16,23 +16,19 @@ timestamp="$4"
 PREFS="/tmp/Eyesis_Correction_$timestamp.xml"
 LOGFILE="/tmp/Eyesis_Correction_$timestamp.log"
 PIDFILE="/tmp/Eyesis_Correction_$timestamp.pid"
+RETFILE="/tmp/Eyesis_Correction_$timestamp.ret"
 
 if ! corrxml.sh "$prefs" "$source" "$PREFS" ; then
   echo corrxml.sh failed
   exit 1
 fi
 
-/usr/bin/time $FIJI --headless --allow-multiple --mem $MEM --run Eyesis_Correction "$PREFS" > "$LOGFILE" 2>&1 &
-FIJI_PID=$!
-
-echo $FIJI_PID > "$PIDFILE"
-
-sleep 5
-
-if ! killall -0 $FIJI_PID ; then
-  echo "Error: see $LOGFILE for details"
-  exit 1
-fi
+(
+    $FIJI --headless --allow-multiple --mem $MEM --run Eyesis_Correction "$PREFS" > "$LOGFILE" 2>&1 & FIJI_PID=$!
+    echo $FIJI_PID > "$PIDFILE"
+    wait $FIJI_PID
+    echo $? > "$RETFILE"
+) &
 
 exit 0
 

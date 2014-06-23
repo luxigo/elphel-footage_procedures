@@ -182,7 +182,6 @@
                       } else {
                         $('#status_span',html(data.message);
                         show_progress('Eyesis_Correction',data.timestamp);
-                        ..... zzz ....
                       }
                     },
                     error: function(jqXHR,textStatus,errorThrown) {
@@ -241,23 +240,52 @@
                 working_timeout=setTimeout(working,1000);
             }
 
+
             function show_progress(jobname,timestamp) {
-              $.ajax({
-                  url: "progress.php",
-                  data: {
-                    j: jobname,
-                    t: timestamp
-                  },
-                  success: function(data) {
-                  },
-                  error: function(jqXHR,textStatus,errorThrown) {
-                    
-                  }
-              });
+                 $.ajax({
+                           url: "progress.php",
+                           data: {
+                                j: jobname,
+                                t: timestamp
+                           },
+                           success: function(reply) {
+                                switch(reply.status) {
+                                case 'running':
+                                     $('#status_span').html(reply.command+' running ('+reply.elapsed.toHHMMSS()+')');
+                                     setTimeout(function(){
+                                          show_progress(jobname,timestamp);
+                                     },10000);
+                                     break;
+                                case 'terminated':
+                                     procedure_done('Job terminated with exit code '+reply.exit_code);
+                                     break; 
+                                case 'error':
+                                     procedure_done('Error: '+reply.error);
+                                     break;
+                                }
+                           },
+                           error: function(jqXHR,textStatus,errorThrown) {
+                                $('#status_span').html('Server error: '+textStatus+' '+errorThrown);
+                                console.log(arguments);
+                                setTimeout(function(){
+                                     show_progress(jobname,timestamp);
+                                },10000);
+                           }
+                 });
+            }
+            String.prototype.toHHMMSS = function () {
+                 var sec_num = parseInt(this, 10); // don't forget the second param
+                 var hours   = Math.floor(sec_num / 3600);
+                 var minutes = Math.floor((sec_num - (hours * 3600)) / 60);
+                 var seconds = sec_num - (hours * 3600) - (minutes * 60);
+
+                 if (hours   < 10) {hours   = "0"+hours;}
+                 if (minutes < 10) {minutes = "0"+minutes;}
+                 if (seconds < 10) {seconds = "0"+seconds;}
+                 var time    = hours+':'+minutes+':'+seconds;
+                 return time;
             }
 
-
-        </script>
-
-    </body>
+          </script>
+     </body>
 </html>

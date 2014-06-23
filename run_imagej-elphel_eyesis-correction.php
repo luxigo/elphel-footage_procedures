@@ -4,7 +4,7 @@ $results=$_GET['results']:
 $prefs=$_GET['prefs'];
 
 $output=array();
-$timestamp=str_replace('.','',microtime(true));
+$timestamp=str_replace('.','_',microtime(true));
 exec("./bin/imagej_eyesis_correction.sh ".escapeshellarg($prefs)." ".escapeshellarg($source)." ".$timestamp,$output,$ret);
 if ($ret!=0) {
   send_reply('{"error": '.$output[0].'}');
