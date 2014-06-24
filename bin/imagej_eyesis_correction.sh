@@ -23,11 +23,13 @@ if ! corrxml.sh "$eyesis_correction_xml" "$source" "$PREFS" ; then
   exit 1
 fi
 
+exec 0>&- # close stdin
+exec 1>&- # close stdout
+exec 2>&- # close stderr
+
 (
-    $FIJI --headless --allow-multiple --mem $MEM --run Eyesis_Correction prefs=$PREFS > "$LOGFILE" 2>&1 & FIJI_PID=$!
-    echo $FIJI_PID > "$PIDFILE"
+    $FIJI --headless --allow-multiple --mem $MEM --run Eyesis_Correction prefs=$PREFS > $LOGFILE 2>&1 & FIJI_PID=$!
+    echo -n $FIJI_PID > $PIDFILE
     wait $FIJI_PID
     echo -n $? > "$RETFILE"
 ) &
-
-exit 0
