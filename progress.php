@@ -18,7 +18,8 @@ $job_pid=file_get_contents($pid_file);
 $output=array();
 exec('ps -o comm= -p'.escapeshellarg($job_pid),$output,$ret);
 if ($ret==0){
-     $elapsed=time()-explode('_',$timestamp)[0]; 
+     $start=explode('_',$timestamp); 
+     $elapsed=time()-$start[0];
      send_reply('{"status": "running", "command": "'.$output[0].'", "elapsed": "'.$elapsed.'"}');
 } else {
      unlink($pid_file);
