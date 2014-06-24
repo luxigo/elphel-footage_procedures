@@ -180,7 +180,7 @@
                       if (data.error) {
                         procedure_done(data.error);
                       } else {
-                        $('#status_span').html(data.message);
+                        $('#status_span',html(data.message);
                         show_progress('Eyesis_Correction',data.timestamp);
                       }
                     },
@@ -257,7 +257,7 @@
                                      },10000);
                                      break;
                                 case 'terminated':
-                                     procedure_done('Job terminated with exit code '+reply.exit_code);
+                                     procedure_done('Job terminated after '+reply.elapsed.toHHMMSS()+' with exit code '+reply.exit_code);
                                      break; 
                                 case 'error':
                                      procedure_done('Error: '+reply.error);
