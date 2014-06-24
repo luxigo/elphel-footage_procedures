@@ -22,12 +22,12 @@ if ($ret==0){
      send_reply('{"status": "running", "command": "'.$output[0].'", "elapsed": "'.$elapsed.'"}');
 } else {
      unlink($pid_file);
-     send_reply('{"status": "error", "error": "Job not found: '.$jobname.' '.$timestamp.$ .$job_pid.'"}');
+     send_reply('{"status": "error", "error": "Job not found: '.$jobname.' '.$timestamp.' '.$job_pid.'"}');
 }
 
-function send_reply(reply) {                                                            
-    header("Content-Type: text/json");                                                  
-    header("Content-Length: "+strlen($reply));                                          
+function send_reply($reply) {                                                            
+    header("Content-Type: application/json");                                                  
+    header("Content-Length: ".strlen($reply));                                          
     echo $reply;                                                                        
     exit(0);                                                                            
 }                                                                                       

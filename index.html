@@ -180,7 +180,7 @@
                       if (data.error) {
                         procedure_done(data.error);
                       } else {
-                        $('#status_span',html(data.message);
+                        $('#status_span').html(data.message);
                         show_progress('Eyesis_Correction',data.timestamp);
                       }
                     },
