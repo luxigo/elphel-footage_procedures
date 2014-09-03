@@ -1,0 +1,9 @@
+[submodule "elphel-footage_downloader"]
+	path = elphel-footage_downloader
+	url = git@github.com:luxigo/elphel-footage_downloader
+[submodule "elphel-parallel-post-processing"]
+	path = elphel-parallel-post-processing
+	url = git@github.com:/luxigo/elphel-parallel-post-processing
+[submodule "sshall"]
+	path = sshall
+	url = git@github.com:luxigo:/sshall.git
