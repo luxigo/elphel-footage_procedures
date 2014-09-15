@@ -7,3 +7,9 @@
 [submodule "sshall"]
 	path = sshall
 	url = git@github.com:luxigo:/sshall.git
+[submodule "elphel-mov-splitter"]
+	path = elphel-mov-splitter
+	url = https://github.com/f0x06/elphel-mov-splitter.git
+[submodule "imagej-elphel-config-editor"]
+	path = imagej-elphel-config-editor
+	url = git@github.com:/luxigo/imagej-elphel-config-editor.git
