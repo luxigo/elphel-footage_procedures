@@ -14,46 +14,51 @@ usage() {
 
 [ $# -ne 2 -o "$1" == "-h" ] && usage
 
-get_timestamp_count() {
-  local indexlist=()
-  local index
-  for (( i=0; i<${#JP4LIST[@]}; ++i )) do
-    if [[ ${JP4LIST[i]} =~ $TIMESTAMP ]] ; then
-      index=${JP4LIST[i]:18}
-      indexlist[$index]=1
-    fi
-  done
-  echo ${#indexlist[@]}
-}
-
-del_timestamp() {
-  local count=0
-  for (( i=0; i<${#JP4LIST[@]}; ++i )) do
-    if [[ ${JP4LIST[i]} =~ $TIMESTAMP ]] ; then
-      unset JP4LIST[i] 
-      ((++count))
-      [ $count -eq 9 ] && break
-    fi
-  done
-  JP4LIST=(${JP4LIST[@]})
-}
-
 wait_jp4() {
   local l
-  inotifywait -m -e close_write $JP4DIR 2> $INOTIFY_STDERR | while read l ; do
-    local event=($l)
-    local filename=$(basename ${event[2]} .jp4)
-    JP4LIST+=($filename)
-    TIMESTAMP=${filename:0:17}
-    local count=$(get_timestamp_count)
-    if [ "$count" == "9" ] ; then
-      if ! grep -q $TIMESTAMP $OUTFILE ; then
-        echo $TIMESTAMP >> $OUTFILE
-        echo $TIMESTAMP >&2
-      fi
-      del_timestamp
+  inotifywait -m -e close_write $JP4DIR 2> $INOTIFY_STDERR | doit | while read timestamp ; do
+    if ! grep -q $TIMESTAMP $OUTFILE ; then
+      echo $TIMESTAMP >> $OUTFILE
     fi
   done
+}
+
+doit() {
+
+  node << EOF 
+
+var jp4list={};
+
+readline=require('readline');
+
+var rl=readline.createInterface({
+
+  input: process.stdin,
+  output: process.stdout
+
+}).on('line',function(line){
+
+  var filename=line.split('.')[0];
+  var timestamp=filename.substr(0,17);
+  var camera=filename.substr(18);
+
+  if (!jp4list[timestamp]) {
+    jp4list[timestamp]=[];
+  }
+
+  var got=jp4list[timestamp];
+  got[camera]=1;
+
+  if (got[1] && got[2] && got[3] && got[4] && got[5] && got[6] && got[7] && got[8] && got[9]) {
+    console.log(timestamp);
+    delete jp4list[timestamp];
+  }
+
+}).on('close',function(){
+  process.exit(0);
+});
+
+EOF
 }
 
 wait_jp4 &
