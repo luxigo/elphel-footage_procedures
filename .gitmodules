@@ -13,3 +13,6 @@
 [submodule "imagej-elphel-config-editor"]
 	path = imagej-elphel-config-editor
 	url = git@github.com:/luxigo/imagej-elphel-config-editor.git
+[submodule "jQueryFileTree"]
+	path = jQueryFileTree
+	url = git@github.com:luxigo/jQueryFileTree.git

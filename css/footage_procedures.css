@@ -36,7 +36,7 @@
     background:-moz-linear-gradient(0% 90% 90deg, #4195dd, #003C82);
 } 
 
-.rounded_borders {
+input, .panel, .rounded_borders {
     border: 0px;
     -moz-border-radius:3px;
     -webkit-border-radius:3px;
@@ -44,19 +44,19 @@
     border-radius:3px;
 }
 
-.shadow {
+input, .panel, .shadow {
     -moz-box-shadow: 2px 2px 2px black;
     -webkit-box-shadow: 2px 2px 2px black;
     box-shadow: 2px 2px 2px black;
 }
 
-.gradient {
+.panel, .gradient {
     /*background: rgba(255,255,255,0.7);*/
     background: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.9)), to(rgba(225,225,225,0.6))); /* for webkit browsers */
     background: -moz-linear-gradient(top,  rgba(255,255,255,0.9),  rgba(255,255,255,0.6)); /* for firefox 3.6+ */
 }
 
-.padding {
+input, .padding {
     padding: 2px 5px 2px 5px;
 }
 
