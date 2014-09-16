@@ -43,7 +43,6 @@ wait_jp4() {
   inotifywait -m -e close_write $JP4DIR 2> $INOTIFY_STDERR | while read l ; do
     local event=($l)
     local filename=$(basename ${event[2]} .jp4)
-    local filename=$1
     JP4LIST+=($filename)
     TIMESTAMP=${filename:0:17}
     local count=$(get_timestamp_count)
