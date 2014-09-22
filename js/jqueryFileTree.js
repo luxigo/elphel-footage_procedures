@@ -56,9 +56,9 @@ if(jQuery) (function($){
 						if( options.root == dir ) $('UL:hidden',element).show(); else $('UL:hidden',element).slideDown({ duration: options.expandSpeed, easing: options.expandEasing });
 						bindTree(element);
 
-						$(this).parent().removeClass('collapsed').addClass('expanded');
+						$(element).removeClass('collapsed').addClass('expanded');
 
-						_trigger($(this), 'filetreeexpanded', data);
+						_trigger(element, 'filetreeexpanded', data);
 					})
 					.fail(function(){
 						$('.start',element).html('');
@@ -71,6 +71,8 @@ if(jQuery) (function($){
 						// set up data object to send back via trigger
 						var data = {};
 						data.li = $(this).closest('li');
+            $('.selected',$(this).closest('div')).not(data.li).removeClass('selected');
+            data.li.addClass('selected');
 						data.type = ( data.li.hasClass('directory') ? 'directory' : 'file' );
 						data.value	= $(this).text();
 						data.rel	= $(this).prop('rel');
@@ -90,7 +92,7 @@ if(jQuery) (function($){
 							} else {
 								// Collapse
 								_trigger($(this), 'filetreecollapse', data);
-                var parent=$(this.parent());
+                var parent=$(this).parent();
 								$('UL',parent).slideUp({ duration: options.collapseSpeed, easing: options.collapseEasing });
 								parent.removeClass('expanded').addClass('collapsed');
 
