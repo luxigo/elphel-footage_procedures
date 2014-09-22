@@ -84,4 +84,6 @@ input, .padding {
 
 #step3_kml_gen_div {position:relative;top:20px;}
 
+li.directory.selected { background-color: cyan }
+
 

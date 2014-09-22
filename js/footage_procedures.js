@@ -1,3 +1,5 @@
+var selected_directory;
+
 $(document).ready(function(){
   input_init();
   $("button.browse").on('click.browse',function(e){
@@ -5,9 +7,9 @@ $(document).ready(function(){
     if (!div.length) {
       div=$('<div id="openFileDialog">');
       div.fileTree({
-        root: '/data',
-        folderEvent: 'mouseup',
+        root: 'data',
         loadMessage: 'Loading...',
+        folderEvent: 'mouseup',
         showFiles: $(e.target).attr('directory')==undefined
       }, function(file) {
         var callback=$(e.target).data('callback');
@@ -19,10 +21,27 @@ $(document).ready(function(){
         }
       });
       div.wrap('<div class="wrap openFileDialog">');
+      div.on('filetreeexpand',function(e){
+        selected_directory=e.target;
+      });
     }
     div.dialog({
       modal: true,
-      maxHeight: $('body').height()
+      maxHeight: $('body').height(),
+      open: function(){
+        $(document).on('keyup.fileTree',function(e){
+          console.log(e.keyCode);
+          if (e.keyCode==13) {
+            if (selected_directory) {
+              div.dialog('close');
+              $('input#processing_folder').val($(selected_directory).attr('rel'));
+            }
+          }
+        });
+      },
+      close: function() {
+        $(document).off('keyup.fileTree');
+      }
     });
   });
 });
@@ -162,7 +181,6 @@ function working(){
   working_timeout=setTimeout(working,1000);
 }
 
-
 function show_progress(jobname,timestamp) {
   $.ajax({
     url: "progress.php",
@@ -195,6 +213,7 @@ function show_progress(jobname,timestamp) {
           }
           });
 }
+
 String.prototype.toHHMMSS = function () {
   var sec_num = parseInt(this, 10); // don't forget the second param
   var hours   = Math.floor(sec_num / 3600);

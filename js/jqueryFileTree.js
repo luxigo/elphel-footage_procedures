@@ -107,7 +107,7 @@ if(jQuery) (function($){
 						return false;
 					});
 					// Prevent A from triggering the # on non-click events
-					if( options.folderEvent.toLowerCase != 'click' ) $('LI A',element).off('click'+'.jqueryFileTree');
+					if( options.folderEvent.toLowerCase != 'click' ) $('LI A',element).off('click');
 				}
 
 				// Loading message
