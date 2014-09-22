@@ -40,20 +40,20 @@ if(file_exists($DIR) ) {
 	  natcasesort($files);
 		echo "<ul class='jqueryFileTree'>";
 		// All dirs
-    if ($_POST['showFiles']!='false')
+    if ($_POST['showFiles']==='true')
     foreach( $files as $file ) {
-			if(is_dir($DIR . $file) ) {
-				echo "<li class='directory collapsed'>{$checkbox}<a href='#' rel='" .htmlentities($DIR . $file). "/'>" . htmlentities($file) . "</a></li>";
-			}
-    }
-		// All files
-    if ($_POST['showDirectories']!='false')
-		foreach( $files as $file ) {
 			if(!is_dir($DIR . $file) ) {
 				$ext = preg_replace('/^.*\./', '', $file);
 				echo "<li class='file ext_{$ext}'>{$checkbox}<a href='#' rel='" . htmlentities($DIR . $file) . "'>" . htmlentities($file) . "</a></li>";
 			}
-		}
+    }
+		// All files
+    if  ($_POST['showDirectories']==='true')
+		foreach( $files as $file ) {
+			if(is_dir($DIR . $file) ) {
+				echo "<li class='directory collapsed'>{$checkbox}<a href='#' rel='" .htmlentities($DIR . $file). "/'>" . htmlentities($file) . "</a></li>";
+			}
+    }
 		echo "</ul>";
 	}
 }
