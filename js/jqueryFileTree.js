@@ -72,7 +72,13 @@ if(jQuery) (function($){
 						var data = {};
 						data.li = $(this).closest('li');
             $('.selected',$(this).closest('div')).not(data.li).removeClass('selected');
-            data.li.addClass('selected');
+            if (data.li.hasClass('directory')) {
+              if (!options.showFiles) {
+                data.li.addClass('selected');
+              }
+            } else {
+              data.li.addClass('selected');
+            }
 						data.type = ( data.li.hasClass('directory') ? 'directory' : 'file' );
 						data.value	= $(this).text();
 						data.rel	= $(this).prop('rel');

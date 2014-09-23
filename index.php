@@ -20,8 +20,30 @@
                 <div id=folders>
                     <table>
                         <tr>
-                            <td>Processing folder:</td>
-                            <td><input id="processing_folder" type="text"></td>
+                            <td>MOV folder:</td>
+                            <td><input id="mov_folder" type="text" class="file"></td>
+                            <td><button class="browse" directory>...</button></td>
+                            <td><button id="mov_split" disabled>Extract JP4s</button></td>
+                        </tr>
+                        <tr>
+                            <td>JP4 folder:</td>
+                            <td><input id="jp4_folder" type="text" class="file"></td>
+                            <td><button class="browse" directory>...</button></td>
+                        </tr>
+                        <tr>
+                            <td>Post-processing preferences:</td>
+                            <td><input id="xml_prefs" type="text" class="file"></td>
+                            <td><button class="browse">...</button></td>
+                            <td><button id="xml_prefs_edit" disabed>Edit</button></td>
+                        </tr>
+                        <tr>
+                            <td>Post-processing output folder:</td>
+                            <td><input id="imagej_processed_folder" type="text" class="file"></td>
+                            <td><button class="browse" directory>...</button></td>
+                        </tr>
+                        <tr>
+                            <td>Stitched panoramas folder:</td>
+                            <td><input id="pano_folder" type="text" class="file"></td>
                             <td><button class="browse" directory>...</button></td>
                         </tr>
                     </table>

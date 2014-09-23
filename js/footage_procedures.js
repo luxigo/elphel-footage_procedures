@@ -1,11 +1,16 @@
-var selected_directory;
+var selected_fileDialogItemp;
 
 $(document).ready(function(){
+
+  // restore inputs, set save on change
   input_init();
+
+  // jquery fileTree dialog for buttons of class "browse"
   $("button.browse").on('click.browse',function(e){
-    var div=$('#openFileDialog');
+    var input=$('input',$(e.target).closest('tr'));
+    var div=$('#openFileDialog_'+input.attr('id'));
     if (!div.length) {
-      div=$('<div id="openFileDialog">');
+      div=$('<div id="openFileDialog_'+input.attr('id')+'">');
       div.fileTree({
         root: 'data',
         loadMessage: 'Loading...',
@@ -21,8 +26,8 @@ $(document).ready(function(){
         }
       });
       div.wrap('<div class="wrap openFileDialog">');
-      div.on('filetreeexpand',function(e){
-        selected_directory=e.target;
+      div.on('filetreeclicked filetreeexpand',function(e){
+        selected_dialogItem=e.target;
       });
     }
     div.dialog({
@@ -32,9 +37,9 @@ $(document).ready(function(){
         $(document).on('keyup.fileTree',function(e){
           console.log(e.keyCode);
           if (e.keyCode==13) {
-            if (selected_directory) {
+            if (selected_dialogItem) {
               div.dialog('close');
-              $('input#processing_folder').val($(selected_directory).attr('rel'));
+              input.val($(selected_dialogItem).attr('rel')).change();
             }
           }
         });
@@ -44,36 +49,89 @@ $(document).ready(function(){
       }
     });
   });
+
+  $('button#xml_prefs_edit').on('click',function(){
+    var iframe=$('#xml_prefs_editor');
+    var xml='..'+$('#xml_prefs').val();
+    if (iframe.length) {
+      iframe.closest('div').remove();
+    }
+    iframe=$('<iframe>');
+    iframe.on('load',function(){
+      $(window).trigger('resize.xml_prefs');
+    });
+    var div=$('#xml_prefs_editor_wrapper');
+    if (!div.length) {
+      div=$('<div id="xml_prefs_editor_wrapper"></div>');
+      div.append(iframe);
+    }
+    $('body').css('overflow','hidden');
+    $(div).dialog({
+      modal: true,
+      position: {
+        my: "top",
+        at: "top"
+      },
+      heigth: $('body').height(),
+      width: $('body').width(),
+      open: function() {
+        $(window).on('resize.xml_prefs',function(){
+          var height=$(window).prop('innerHeight');
+          var width=$(window).prop('innerWidth');
+          console.log(width+'x'+height);
+          div.width(width);
+          div.height(height);
+          iframe.width(width-16);
+          iframe.height(height);
+          console.log(iframe.closest('.ui-dialog'));
+          iframe.closest('.ui-dialog').width(width-16);
+          iframe.closest('.ui-dialog').height(height);
+        }).resize();
+      },
+      close: function() {
+        $('body').css('overflow','');
+        $(window).off('resize.xml_prefs');
+      },
+      draggable: false
+      
+    });
+    var timestamp=new Date().getTime();
+    iframe.attr('src','imagej-elphel-config-editor/index.html?exclude=sourcePath|sourceDirectory|resultsDirectory&xml='+xml+'&include=CORRECTION_PARAMETERS&expand=true&t='+timestamp+'">');
+  });
 });
 
 function input_init() {
-  $('input#processing_folder')
-  .val($.cookie('processing_folder'))
-  .change($.cookie('processing_folder',$('input#processing_folder').val()));
+  $('input').each(function(){
+    $(this)
+    .val($.cookie(this.id))
+    .change(function(e){
+      $.cookie(e.target.id,$('input#'+e.target.id).val());
+    });
+  });
 }
 
 var working_timeout;
 
 function splitall(){
-  request = "split_mov_customized.php?ext=jp4&path="+$("#pf").val();
+  request = "split_mov_customized.php?ext=jp4&path="+$("#mov_folder").val();
   $("#status_span").html("Splitting");
   ajax_request(request,"Splitting done.");
 }
 
 function filter(){
-  request = "filter_jp4s.php?ext=jp4&path="+$("#pf").val();
+  request = "filter_jp4s.php?ext=jp4&path="+$("#mov_folder").val();
   $("#status_span").html("Filtering");
   ajax_request_async(request,"Filtering done.");
 }
 
 function kml_gen(){
-  request = "exif2kml_local.php?ext=jp4&path="+$("#pf").val();
+  request = "exif2kml_local.php?ext=jp4&path="+$("#mov_folder").val();
   $("#status_span").html("Generating KML");
   ajax_request_async(request,"KML generated.");
 }
 
 function copy_all(){
-  request = "copy_all.php?src=/data/footage/"+$("#pf").val()+"&dest=/data/post-processing/src"+"&imagej=/data/post-processing/imagej_processed";
+  request = "copy_all.php?src=/data/footage/"+$("#mov_folder").val()+"&dest="+$("#jp4_folder")+"&imagej="+$("#imagej_processed_folder");
   $("#status_span").html("Copying");
   ajax_request(request,"Copying done.");
 }
@@ -114,8 +172,8 @@ function step2_run_all() {
     url: "run_imagej-elphel_eyesis-correction.php",
     data: {
       source: $('#s2_sf').val(),
-    results: $('#s2_rf').val(),
-    prefs: $('#s2_cp').val()
+      results: $('#s2_rf').val(),
+      prefs: $('#s2_cp').val()
     },
     success: function(data,textStatus,jqXHR) {
       if (data.error) {
@@ -123,13 +181,13 @@ function step2_run_all() {
       } else {
         $('#status_span',html(data.message));
           show_progress('Eyesis_Correction',data.timestamp);
-          }
-          },
-          error: function(jqXHR,textStatus,errorThrown) {
-            procedure_done(textStatus+' '+errorThrown);
-          }
-          });
-        }
+      }
+    },
+    error: function(jqXHR,textStatus,errorThrown) {
+      procedure_done(textStatus+' '+errorThrown);
+    }
+  });
+}
 
 function step3_run_all() {
   step3_stitch();
@@ -184,34 +242,34 @@ function working(){
 function show_progress(jobname,timestamp) {
   $.ajax({
     url: "progress.php",
-  data: {
-    j: jobname,
-  t: timestamp
-  },
-  success: function(reply) {
-    switch(reply.status) {
+    data: {
+      j: jobname,
+      t: timestamp
+    },
+    success: function(reply) {
+      switch(reply.status) {
       case 'running':
         $('#status_span').html(reply.command+' running ('+reply.elapsed.toHHMMSS()+')');
-          setTimeout(function(){
-            show_progress(jobname,timestamp);
-          },10000);
-          break;
-          case 'terminated':
-          procedure_done('Job terminated after '+reply.elapsed.toHHMMSS()+' with exit code '+reply.exit_code);
-          break; 
-          case 'error':
-          procedure_done('Error: '+reply.error);
-          break;
-          }
-          },
-          error: function(jqXHR,textStatus,errorThrown) {
-            $('#status_span').html('Server error: '+textStatus+' '+errorThrown);
-            console.log(arguments);
-            setTimeout(function(){
-              show_progress(jobname,timestamp);
-            },10000);
-          }
-          });
+        setTimeout(function(){
+          show_progress(jobname,timestamp);
+        },10000);
+        break;
+      case 'terminated':
+        procedure_done('Job terminated after '+reply.elapsed.toHHMMSS()+' with exit code '+reply.exit_code);
+        break; 
+      case 'error':
+        procedure_done('Error: '+reply.error);
+        break;
+      }
+    },
+    error: function(jqXHR,textStatus,errorThrown) {
+      $('#status_span').html('Server error: '+textStatus+' '+errorThrown);
+      console.log(arguments);
+      setTimeout(function(){
+        show_progress(jobname,timestamp);
+      },10000);
+    }
+  });
 }
 
 String.prototype.toHHMMSS = function () {

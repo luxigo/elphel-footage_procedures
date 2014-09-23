@@ -43,8 +43,10 @@ if(file_exists($DIR) ) {
     if ($_POST['showFiles']==='true')
     foreach( $files as $file ) {
 			if(!is_dir($DIR . $file) ) {
-				$ext = preg_replace('/^.*\./', '', $file);
-				echo "<li class='file ext_{$ext}'>{$checkbox}<a href='#' rel='" . htmlentities($DIR . $file) . "'>" . htmlentities($file) . "</a></li>";
+        $ext = preg_replace('/^.*\./', '', $file);
+        if ($ext=="xml") {
+          echo "<li class='file ext_{$ext}'>{$checkbox}<a href='#' rel='" . htmlentities($DIR . $file) . "'>" . htmlentities($file) . "</a></li>";
+        }
 			}
     }
 		// All files
