@@ -15,39 +15,127 @@
         <link rel="stylesheet" type="text/css" href="css/footage_procedures.css" />
      </head>
      <body>
-            <h4>Step 1: Extracting, creating KML, Previewing, Copying</h4>
-            <div id=step1_div class="panel">
-                <div id=folders>
+            <fieldset id="step_download" class="panel">
+                <legend>Download footage and logs</legend>
+                
+                <div class="parameters">
                     <table>
                         <tr>
-                            <td>MOV folder:</td>
-                            <td><input id="mov_folder" type="text" class="file"></td>
+                            <td><label for="cameras_folder">Destination folder :</label></td>
+                            <td><input id="cameras_folder" type="text" class="file" value="/data/camera/"></td>
                             <td><button class="browse" directory>...</button></td>
-                            <td><button id="mov_split" disabled>Extract JP4s</button></td>
                         </tr>
                         <tr>
-                            <td>JP4 folder:</td>
+                            <td><label for="cam_erase">Erase from camera :</label></td>
+                            <td><input id="cam_erase" type="checkbox"></td>
+                        </tr>
+                        <tr>
+                            <td><label for="chain_upto">Goal :</label></td>
+                            <td>
+                                <select id="chain_upto">
+                                  <option>-</option>
+                                  <option>JP4</option>
+                                  <option>Equirectangular</option>
+                                  <option>Equirectangular stitched</option>
+                                  <option>Equirectangular WebGL tiles</option>
+                                  <option>Gnomonic</option>
+                                  <option>Point cloud</option>
+                                </select> 
+                                <button>+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="parallelize">Parallellize :</label></td>
+                            <td><table cellspacing=0><tr><td><input id="parallelize" type="checkbox"></td><td><button id="parallel_settings">Settings</button></td></tr></table></td>
+                        </tr>
+                    </table>
+                </div>
+                <button class="go right">Start</button>
+            </fieldset>
+
+            <fieldset id="step_extract" class="panel">
+                <legend>Extract JP4 images</legend>
+                
+                <div class="parameters">
+                    <table>
+                        <tr>
+                            <td><label for="mov_folder">Source folder :</label></td>
+                            <td><input id="mov_folder" type="text" class="file"></td>
+                            <td><button class="browse" directory>...</button></td>
+                        </tr>
+                        <tr>
+                            <td><label for="jp4_folder">Destination folder :</label></td>
                             <td><input id="jp4_folder" type="text" class="file"></td>
                             <td><button class="browse" directory>...</button></td>
                         </tr>
                         <tr>
-                            <td>Post-processing preferences:</td>
+                            <td><label for="chain_upto">Goal :</label></td>
+                            <td>
+                                <select id="chain_upto">
+                                  <option>JP4</option>
+                                  <option>Equirectangular</option>
+                                  <option>Equirectangular stitched</option>
+                                  <option>Equirectangular WebGL tiles</option>
+                                  <option>Gnomonic</option>
+                                  <option>Point cloud</option>
+                                </select>
+                                <button>+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="parallelize">Parallellize :</label></td>
+                            <td><table cellspacing=0><tr><td><input id="parallelize" type="checkbox"></td><td><button id="parallel_settings">Settings</button></td></tr></table></td>
+                        </tr>
+                    </table>
+                </div>
+                 <div class="right"><button id="mov_split" class="go" enabled>Start</button></div>
+            </fieldset>
+            <fieldset id="step_postproc" class="panel">
+                <legend>Post processing</legend>
+                <div class="parameters">
+                    <table>
+                        <tr>
+                            <td><label for="xml_prefs">Post-processing preferences :</label></td>
                             <td><input id="xml_prefs" type="text" class="file"></td>
                             <td><button class="browse">...</button></td>
                             <td><button id="xml_prefs_edit" disabed>Edit</button></td>
                         </tr>
                         <tr>
-                            <td>Post-processing output folder:</td>
+                            <td><label for="imagej_processed_folder">Destination folder :</label></td>
                             <td><input id="imagej_processed_folder" type="text" class="file"></td>
                             <td><button class="browse" directory>...</button></td>
                         </tr>
                         <tr>
-                            <td>Stitched panoramas folder:</td>
+                            <td><label for="chain_upto">Goal :</label></td>
+                            <td>
+                                <select id="chain_upto">
+                                  <option>Equirectangular</option>
+                                  <option>Equirectangular stitched</option>
+                                  <option>Equirectangular WebGL tiles</option>
+                                  <option>Gnomonic</option>
+                                  <option>Point cloud</option>
+                                </select>
+                                <button>+</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><label for="parallelize">Parallellize :</label></td>
+                            <td><table cellspacing=0><tr><td><input id="parallelize" type="checkbox"></td><td><button id="parallel_settings">Settings</button></td></tr></table></td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="right"><button id="post_process" class="go">Start</button></div>
+            </fieldset>
+                        </tr>
+                        <tr>
+                            <td><label for="pano_folder">Stitched panoramas folder :</label></td>
                             <td><input id="pano_folder" type="text" class="file"></td>
                             <td><button class="browse" directory>...</button></td>
                         </tr>
                     </table>
                 </div>
+            </fieldset>
+
                 <div id=buttons>
                     <table>
                         <tr><td style="padding:3px;"><button class=button id=splitall onclick="splitall()">Split All *.movs</button></td></tr>
@@ -56,10 +144,10 @@
                         <tr><td style="padding:20px 0px;"><button class=button id=copy_all onclick="copy_all()">Copy All</button>&nbsp;to <b>/data/post-processing/src</b>&nbsp;&nbsp;OR use&nbsp;&nbsp;<a href='../panorama_preview/'>Eyesis Panorama Previewer</a></td></tr>
                     </table>
                 </div>
-                <div style="position:absolute;top:270px;left:750px;">
+                <div>
                     <button class=button id=step1_run_all onclick="step1_run_all()">Run All</button>
                 </div>
-            </div>
+            </fieldset>
             <h4>Step 2: Enhancing in ImageJ</h4>    
             <div id=step2_div class="panel">
                 <div id=step2_folders>
@@ -133,7 +221,7 @@
                         <tr><td style="padding:3px;"><button class=button id=step3_kml_gen onclick="step3_kml()">Generate KML for WebGL Editor</button></td></tr>
                     </table>
                 </div>
-                <div style="position:absolute;top:765px;left:750px;">
+                <div>
                     <button class=button id=step1_run_all onclick="step3_run_all()">Run All</button>
                 </div>
             </div>

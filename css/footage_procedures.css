@@ -1,108 +1,68 @@
-#folders {position:relative;}
-#buttons {position:relative;top:20px;left:20px;}
-#status {position:relative;top:50px;left:30px;}
-
-#status_span, #blinking_span {font-size:40px;}
+tr {
+  height: 1.5em;
+}
 
 tr td:first-child {
   text-align: right;
 
 }
 
-div#xml_prefs_editor_wrapper {
-  margin: 0px;
-  padding: 0px;
-  border: 0px;
-}
-
 iframe {
   border: 0px;
 }
 
-.button {
-    font-size:12px;
-    color:#fff;
-    display:inline-block;
-    border:0px;
-
-    text-align:center;
-
-    -moz-border-radius:3px;
-    -webkit-border-radius:3px;
-    -o-border-radius:3px;
-    border-radius:3px;
-    background:#66aa66;
-
-    -moz-box-shadow: 1px 1px 1px black;
-    -webkit-box-shadow: 1px 1px 1px black;
-    box-shadow: 1px 1px 1px black;
-    
-    padding: 5px;
-}
-
-.button:hover {
-    color:#fff;
-    background:#66bb66;
-}
-
-.button:active {
-    background:#4195dd;
-    background:-webkit-gradient(linear, 0% 0%, 0% 100%, from(#003C82), to(#4195dd));
-    background:-moz-linear-gradient(0% 90% 90deg, #4195dd, #003C82);
-} 
-
-input, .panel, .rounded_borders {
+legend,fieldset {
     border: 0px;
-    -moz-border-radius:3px;
-    -webkit-border-radius:3px;
-    -o-border-radius:3px;
-    border-radius:3px;
-}
-
-input, .panel, .shadow {
-    -moz-box-shadow: 2px 2px 2px black;
-    -webkit-box-shadow: 2px 2px 2px black;
-    box-shadow: 2px 2px 2px black;
-}
-
-.panel, .gradient {
-    /*background: rgba(255,255,255,0.7);*/
-    background: -webkit-gradient(linear, left top, left bottom, from(rgba(255,255,255,0.9)), to(rgba(225,225,225,0.6))); /* for webkit browsers */
-    background: -moz-linear-gradient(top,  rgba(255,255,255,0.9),  rgba(255,255,255,0.6)); /* for firefox 3.6+ */
+    border-radius:8px;
+    padding: 4px;
 }
 
 input, .padding {
-    padding: 2px 5px 2px 5px;
+    padding: 2px 4px 2px 4px;
 }
 
 input.file {
   width: 32em;
 }
 
-#step1_div {
-  background: rgba(100,200,100,0.3);
-  width: 800px;
-  height: 220px;
-  padding: 5px;
+label {
+  margin-right: 10px;
+  margin-left: 10px;
 }
-
-#step2_div {
-  background: rgba(100,200,100,0.3);
-  width: 800px;
-  padding: 5px;
-}
-
-#step3_div {
-  background: rgba(100,200,100,0.3);
-  width: 800px;
-  height: 450px;
-  padding: 5px;
-}
-
-#step3_buttons {position:relative;top:20px;left:20px;}
-
-#step3_kml_gen_div {position:relative;top:20px;}
 
 li.directory.selected a, li.file.selected a { background-color: cyan }
 
+
+fieldset.panel {
+  border: 2px solid black;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+tr.separator {
+  height: 1em;
+}
+
+div.parameters {
+  width: 50em;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+legend {
+  background: white;
+  border: 1px solid black;
+  font-weight: bold;
+}
+
+button.go {
+  font-size: 1.2em;
+  width: 10em;
+  border-radius:8px;
+  position: relative;
+  float:right;
+  margin-right: 1em;
+  margin-bottom: 0.5em;
+
+}
 
